@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 void main() => runApp(const MyApp());
 
@@ -8,75 +7,45 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Simple Google Search',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const SearchPage(),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: GoogleHomePage(),
     );
   }
 }
 
-class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _SearchPageState createState() => _SearchPageState();
-}
-
-class _SearchPageState extends State<SearchPage> {
-  final TextEditingController _controller = TextEditingController();
-  List<String> _results = [];
-  
-  get http => null;
-
-  Future<void> _search(String query) async {
-    final url = Uri.parse(
-      'https://api.duckduckgo.com/?q=$query&format=json&pretty=1',
-    );
-
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        _results = List<String>.from(
-          (data['RelatedTopics'] as List).map((item) => item['Text'] ?? ''),
-        );
-      });
-    } else {
-      setState(() {
-        _results = ['Error fetching results.'];
-      });
-    }
-  }
+class GoogleHomePage extends StatelessWidget {
+  const GoogleHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Google Search'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      backgroundColor: Colors.grey[200],
+      body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () => _search(_controller.text),
-                ),
+            const Text(
+              'Google',
+              style: TextStyle(
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _results.length,
-                itemBuilder: (context, index) => ListTile(
-                  title: Text(_results[index]),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 300,
+              child: TextField(
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: 'Search or type URL',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ),
